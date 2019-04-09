@@ -1,91 +1,75 @@
 variable "location" {
-
- default = "southcentralus"
-
+ default = "eastus"
 }
 
-
-variable "resource_group_name" {
-
- default = "sqm-rg"
+variable "created" {
+    default = "Maikel Majul"
 }
-variable "sg_name" {
-
- default = "sqm-nsg"
-
+variable "Componente" {
+  type        = "map"
+  default     = {
+    Grupo       = "rg"
+    Storage     = "sa"
+    App         = "ap"
+    Kubernetes  = "aks"
+    APIMan      = "api"
+    ServicePlan = "sp"
+  }  
 }
-
-
-# This is the default variable set in the network module. I left this commented
-
-# as an example - no override needed being the default is the value we wanted!
-
-#variable "address_space" {
-
-# description = "The address space that is used by the virtual network."
-
-# default = "10.0.0.0/16"
-
-#}
-
-
-variable "subnet_prefixes" {
-
-default = ["10.0.1.0/24", "10.0.2.0/24"]
-
+variable "Tipo" {
+  type            = "map"
+  default         = {
+      Aplicacion      = "app"
+      Infraestructura = "infra"
+  }
 }
-
-
-variable "subnet_names" {
-
-default = ["sqm-public-subnet", "sqm-private-subnet"]
-
+variable "Ambiente" {
+  type          = "map"
+  default       = {
+        Produccion    = "p"
+        Certificacion = "c"
+        Desarrollo    = "d"
+        Integracion   = "i"
+        Calidad       = "qa"
+  }
 }
 
+variable "AmbienteTags" {
+  type          = "map"
+  default       = {
+        Produccion    = "Produccion"
+        Certificacion = "c"
+        QA            = "Calidad"
+        Desarrollo    = "Desarrollo"
+        Integracion   = "i"
+  }
+}
+variable "Region" {
+  type    = "string"
+  default = "eu"
+}
 
+variable "Codigo" {
+  type    = "string"
+  default = "sqmtestapp"
+}
+
+variable "Version" {
+  type    = "string"
+  default = "01"
+}
 variable "client_id" {
-
  description = "client_id from your Azure login settings, this can be set using an environment variable by prefixing the env var with TF_VAR_client_id"
-
 }
-
-
 variable "client_secret" {
-
  description = "client_secret from your Azure login settings, this can be set using an environment variable by prefixing the env var with TF_VAR_client_secret"
-
 }
-
-
 variable "subscription_id" {
-
  description = "subscription_id from your Azure login settings, this can be set using an environment variable by prefixing the env var with TF_VAR_subscription_id"
-
 }
-
-
 variable "tenant_id" {
-
  description = "tenant_id from your Azure login settings, this can be set using an environment variable by prefixing the env var with TF_VAR_tenant_id"
-
 }
-
-
-variable "db_user" {
-
- default = "psqladminun"
-
-}
-
-
-variable "db_pass" {
-
- default = "HaSh1CoR3"
-
-}
-
 
 variable "ssh_key_public" {}
-
-
 variable "ssh_key_private" {}
