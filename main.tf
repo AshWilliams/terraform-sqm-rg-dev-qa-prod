@@ -27,7 +27,7 @@ resource "azurerm_resource_group" "desarrollo" {
 }
 # App Service Plan
 resource "azurerm_app_service_plan" "appserviceplandev" {
-  name                = "${var.Componente["ServicePlan"]}${var.Region}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Desarrollo"]}"
+  name                = "${var.Componente["ServicePlan"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Desarrollo"]}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.desarrollo.name}"
   # Define Linux as Host OS
@@ -43,7 +43,7 @@ resource "azurerm_app_service_plan" "appserviceplandev" {
 
 # Create an Azure Web App for Containers FrontEnd
 resource "azurerm_app_service" "dockerappfront" {
-  name                = "${var.Componente["App"]}${var.Region}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Desarrollo"]}"
+  name                = "${var.Componente["App"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Desarrollo"]}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.desarrollo.name}"
   app_service_plan_id = "${azurerm_app_service_plan.appserviceplandev.id}"
@@ -83,7 +83,7 @@ resource "azurerm_resource_group" "calidad" {
 }
 # App Service Plan
 resource "azurerm_app_service_plan" "appserviceplanqa" {
-  name                = "${var.Componente["ServicePlan"]}${var.Region}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
+  name                = "${var.Componente["ServicePlan"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.calidad.name}"
   # Define Linux as Host OS
@@ -99,7 +99,7 @@ resource "azurerm_app_service_plan" "appserviceplanqa" {
 
 # Create an Azure Web App for Containers FrontEnd
 resource "azurerm_app_service" "dockerappfrontqa" {
-  name                = "${var.Componente["App"]}${var.Region}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
+  name                = "${var.Componente["App"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.calidad.name}"
   app_service_plan_id = "${azurerm_app_service_plan.appserviceplanqa.id}"

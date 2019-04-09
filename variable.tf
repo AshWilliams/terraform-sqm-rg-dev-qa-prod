@@ -26,10 +26,10 @@ variable "Tipo" {
 variable "Ambiente" {
   type          = "map"
   default       = {
-        Produccion    = "p"
-        Certificacion = "c"
-        Desarrollo    = "d"
-        Integracion   = "i"
+        Produccion    = "prod"
+        Certificacion = "cert"
+        Desarrollo    = "dev"
+        Integracion   = "int"
         Calidad       = "qa"
   }
 }
