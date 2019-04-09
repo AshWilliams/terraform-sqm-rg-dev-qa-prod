@@ -122,5 +122,58 @@ resource "azurerm_app_service" "dockerappfrontqa" {
     type = "SystemAssigned"
   }
 }
+# Productivo
+resource "azurerm_resource_group" "Productivo" {
+  name     = "${var.Componente["Grupo"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Produccion"]}"
+  location = "${var.location}"
+  tags {
+    Ambiente = "${var.AmbienteTags["Produccion"]}"
+    CECO = "04006012"
+    Proyecto = "NOTAS SQM"
+    "Key USGR" = "Beatriz Garcia"
+    "Responsable TI"= "Javier Olave Ruiz / William Donoso"
+    "Created By" = "${var.created}"
+  }
+}
+# App Service Plan
+resource "azurerm_app_service_plan" "appserviceplanprod" {
+  name                = "${var.Componente["ServicePlan"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Produccion"]}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.Productivo.name}"
+  # Define Linux as Host OS
+  kind = "Linux"
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+  properties {
+    reserved = true # Mandatory for Linux plans
+  }
+}
 
+# Create an Azure Web App for Containers FrontEnd
+resource "azurerm_app_service" "dockerappfrontprod" {
+  name                = "${var.Componente["App"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Produccion"]}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.Productivo.name}"
+  app_service_plan_id = "${azurerm_app_service_plan.appserviceplanprod.id}"
+  # Do not attach Storage by default
+  app_settings {
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
+    /*
+    # Settings for private Container Registires  
+    DOCKER_REGISTRY_SERVER_URL      = ""
+    DOCKER_REGISTRY_SERVER_USERNAME = ""
+    DOCKER_REGISTRY_SERVER_PASSWORD = ""
+    */
+  }
+
+  # Configure Docker Image to load on start
+  site_config {
+    always_on        = "true"
+  }
+  identity {
+    type = "SystemAssigned"
+  }
+}
 
