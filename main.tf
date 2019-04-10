@@ -19,9 +19,9 @@ resource "azurerm_resource_group" "desarrollo" {
   tags {
     Ambiente = "${var.AmbienteTags["Desarrollo"]}"
     CECO = "04006012"
-    Proyecto = "NOTAS SQM"
+    Proyecto = "${var.Proyecto}"
     "Key USGR" = "Beatriz Garcia"
-    "Responsable TI"= "Javier Olave Ruiz / William Donoso"
+    "Responsable TI"= "${var.Responsable}"
     "Created By" = "${var.created}"
   }
 }
@@ -67,6 +67,28 @@ resource "azurerm_app_service" "dockerappfront" {
   }
 }
 
+# CosmosDB
+
+resource "azurerm_cosmosdb_account" "example" {
+  name                = "${var.Componente["Cosmos"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Desarrollo"]}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.desarrollo.name}"
+  offer_type          = "Standard"
+  kind                = "MongoDB"
+
+  consistency_policy {
+    consistency_level       = "BoundedStaleness"
+    max_interval_in_seconds = 10
+    max_staleness_prefix    = 200
+  }
+
+  geo_location {
+    prefix            = "${var.Componente["Cosmos"]}-customid"
+    location          = "${var.location}"
+    failover_priority = 0
+  }
+}
+
 
 # QA
 resource "azurerm_resource_group" "calidad" {
@@ -75,9 +97,9 @@ resource "azurerm_resource_group" "calidad" {
   tags {
     Ambiente = "${var.AmbienteTags["QA"]}"
     CECO = "04006012"
-    Proyecto = "NOTAS SQM"
+    Proyecto = "${var.Proyecto}"
     "Key USGR" = "Beatriz Garcia"
-    "Responsable TI"= "Javier Olave Ruiz / William Donoso"
+    "Responsable TI"= "${var.Responsable}"
     "Created By" = "${var.created}"
   }
 }
@@ -122,6 +144,27 @@ resource "azurerm_app_service" "dockerappfrontqa" {
     type = "SystemAssigned"
   }
 }
+
+resource "azurerm_sql_server" "test" {
+  name                         = "${var.Componente["SQLSVR"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
+  resource_group_name          = "${azurerm_resource_group.calidad.name}"
+  location                     = "${var.location}"
+  version                      = "12.0"
+  administrator_login          = "4dm1n157r470r"
+  administrator_login_password = "4-v3ry-53cr37-p455w0rd"
+}
+
+resource "azurerm_sql_database" "test" {
+  name                = "${var.Componente["SQLDB"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Calidad"]}"
+  resource_group_name = "${azurerm_resource_group.calidad.name}"
+  location            = "${var.location}"
+  server_name         = "${azurerm_sql_server.test.name}"
+
+  tags = {
+    environment = "calidad"
+  }
+}
+
 # Productivo
 resource "azurerm_resource_group" "Productivo" {
   name     = "${var.Componente["Grupo"]}${var.location}${var.Tipo["Aplicacion"]}${var.Codigo}${var.Ambiente["Produccion"]}"
@@ -129,9 +172,9 @@ resource "azurerm_resource_group" "Productivo" {
   tags {
     Ambiente = "${var.AmbienteTags["Produccion"]}"
     CECO = "04006012"
-    Proyecto = "NOTAS SQM"
+    Proyecto = "${var.Proyecto}"
     "Key USGR" = "Beatriz Garcia"
-    "Responsable TI"= "Javier Olave Ruiz / William Donoso"
+    "Responsable TI"= "${var.Responsable}"
     "Created By" = "${var.created}"
   }
 }
@@ -176,4 +219,6 @@ resource "azurerm_app_service" "dockerappfrontprod" {
     type = "SystemAssigned"
   }
 }
+
+
 

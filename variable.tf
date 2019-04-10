@@ -14,6 +14,9 @@ variable "Componente" {
     Kubernetes  = "aks"
     APIMan      = "api"
     ServicePlan = "sp"
+    Cosmos      = "cosmos"
+    SQLSVR      = "sqlsvr"
+    SQLDB       = "sqldb"
   }  
 }
 variable "Tipo" {
@@ -54,9 +57,17 @@ variable "Codigo" {
   default = "sqmtestapp"
 }
 
+variable "Proyecto" {
+  default="NOTAS SQM"
+}
+
+variable "Responsable" {
+  default="Javier Olave Ruiz / William Donoso"
+}
+
 variable "Version" {
   type    = "string"
-  default = "01"
+  default = "1.7.0"
 }
 variable "client_id" {
  description = "client_id from your Azure login settings, this can be set using an environment variable by prefixing the env var with TF_VAR_client_id"
