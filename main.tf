@@ -220,5 +220,64 @@ resource "azurerm_app_service" "dockerappfrontprod" {
   }
 }
 
+resource "azurerm_virtual_network" "test" {
+  name                = "acceptanceTestVirtualNetwork1"
+  address_space       = ["10.0.0.0/16"]
+  location            = "${azurerm_resource_group.Productivo.location}"
+  resource_group_name = "${azurerm_resource_group.Productivo.name}"
+}
 
+resource "azurerm_subnet" "test" {
+  name                 = "testsubnet"
+  resource_group_name  = "${azurerm_resource_group.Productivo.name}"
+  virtual_network_name = "${azurerm_virtual_network.Productivo.name}"
+  address_prefix       = "10.0.2.0/24"
+}
+
+resource "azurerm_network_interface" "example" {
+  name                = "acceptanceTestNetworkInterface1"
+  location            = "${azurerm_resource_group.Productivo.location}"
+  resource_group_name = "${azurerm_resource_group.Productivo.name}"
+
+  ip_configuration {
+    name                          = "testconfiguration1"
+    subnet_id                     = "${azurerm_subnet.test.id}"
+    private_ip_address_allocation = "Dynamic"
+  }
+
+  tags = {
+    environment = "Productivo"
+  }
+}
+resource "azurerm_virtual_machine" "example" {
+  name                  = "${local.virtual_machine_name}"
+  location              = "${azurerm_resource_group.Productivo.location}"
+  resource_group_name   = "${azurerm_resource_group.Productivo.name}"
+  network_interface_ids = ["${azurerm_network_interface.example.id}"]
+  vm_size               = "Standard_F2"
+
+  # This means the OS Disk will be deleted when Terraform destroys the Virtual Machine
+  # NOTE: This may not be optimal in all cases.
+  delete_os_disk_on_termination = true
+
+  storage_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2016-Datacenter"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name              = "sqlsvr-osdisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "WinServer2016"
+    admin_username = "Administrador"
+    admin_password = "Administrador.,12345"
+  }
+}
 

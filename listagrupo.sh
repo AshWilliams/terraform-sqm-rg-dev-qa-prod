@@ -7,4 +7,3 @@ do
   echo $rg  
   az.cmd group update -n $rg --set tags.Environment=Test tags.Dept=IT  
 done
-
