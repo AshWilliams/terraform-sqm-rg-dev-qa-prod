@@ -38,7 +38,7 @@ resource "azurerm_app_service_plan" "appserviceplandev" {
   }
   properties {
     reserved = true # Mandatory for Linux plans
-  }
+  }  
 }
 
 # Create an Azure Web App for Containers FrontEnd
